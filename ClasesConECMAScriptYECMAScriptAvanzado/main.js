@@ -19,5 +19,6 @@ productManager.addProduct({ title: "Prod2", description: "Producto Prueba 2 repe
 const notFoundProduct = productManager.getProductById(3);
 
 // getProductById devuelve el producto si lo encuentra
-const foundProduct = productManager.getProductById(1);
-console.log(`Producto con ID 1:`, foundProduct);
+const productId = 1;
+const foundProduct = productManager.getProductById(productId);
+console.log(`Producto con ID ${productId}:`, foundProduct);

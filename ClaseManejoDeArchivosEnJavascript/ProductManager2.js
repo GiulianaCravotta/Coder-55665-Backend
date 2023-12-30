@@ -23,7 +23,7 @@ class ProductManager {
             id: this.productIdCounter++,
             ...product
         };
-        
+
         this.products.push(newProduct);
         this.saveProducts();
         console.log(`Se ha agregado el producto ${newProduct.title}`);
@@ -35,7 +35,7 @@ class ProductManager {
         const product = this.products.find(p => p.id === id);
         if (!product) {
             console.error(`Producto no encontrado con el id: ${id}`);
-            return;
+            return null;
         }
         return product;
     }

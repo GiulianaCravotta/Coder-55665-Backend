@@ -17,7 +17,12 @@ console.log('Productos después de agregar uno:', productManager.getProducts());
 
 //producto por ID
 const productId = 1; 
-console.log(`Producto con ID ${productId}:`, productManager.getProductById(productId));
+const foundProduct = productManager.getProductById(productId);
+if(foundProduct !== null){
+    console.log(`Producto encontrado con ID ${productId}:`,foundProduct);
+}else{
+    console.log(`No se encontró el producto con ID ${productId}`);
+}
 
 // actualizar un producto
 const updatedProductId = 1; 
