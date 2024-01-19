@@ -2,42 +2,44 @@ const { Router } = require("express");
 const CartManager = require("../models/CartManager.js");
 
 const routerCart = Router();
+const cartManager = new CartManager('../data/carrito.json');
 
-routerCart.post('/', async (req, res)=>{
-    try{
-        const newCart = await CartManager.createCart();
-        res.status(201).json(newCart);
-    }catch (error){
-        res.status(500).json({error: "Error"});
+routerCart.post('/', async (req, res) => {
+    try {
+        const cart = await cartManager.createCart();
+        res.status(201).json({ message: 'Carrito creado', cartId: cart.id });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al crear el carrito' });
     }
 });
 
-
-routerCart.get('/:pid', async (req, res) => {
-    const { cid } = req.params;
-
+routerCart.get('/:cid', async (req, res) => {
     try {
-        const cart = await CartManager.getCartById(Number(cid));
+        const { cid } = req.params;
+        const cart = await cartManager.getCartById(cid);
 
         if (cart) {
-            res.status(200).json(cart);
+            res.status(200).json(cart.products);
         } else {
-            res.status(404).send('Carrito no encontrado');
+            res.status(404).json({ error: 'Carrito no encontrado' });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Error interno del servidor' });
+        res.status(500).json({ error: 'Error al obtener el carrito' });
     }
 });
 
-routerCart.post('/:pid/product', async (req, res) => {
-    const { cid, pid } = req.params;
-    const { quantity } = req.body;
-
+routerCart.post('/:cid/product/:pid', async (req, res) => {
     try {
-        const updatedCart = await CartManager.addProductToCart(Number(cid), Number(pid), quantity);
-        res.status(201).json(updatedCart);
+        const { cid, pid } = req.params;
+        const success = await cartManager.addToCart(cid, pid);
+
+        if (success) {
+            res.status(200).json({ message: 'Producto agregado al carrito' });
+        } else {
+            res.status(404).json({ error: 'Carrito no encontrado' });
+        }
     } catch (error) {
-        res.status(500).json({ error: 'Error interno del servidor' });
+        res.status(500).json({ error: 'Error al agregar producto al carrito' });
     }
 });
 

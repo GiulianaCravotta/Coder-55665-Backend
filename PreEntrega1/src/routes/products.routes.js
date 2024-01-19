@@ -2,19 +2,27 @@ const { Router } = require("express");
 const ProductManager = require('../models/ProductManager1.js');
 
 const routerProd = Router();
-const productManager = new ProductManager('../data/products.json');
+const productManager = new ProductManager('../data/productos.json');
 
 routerProd.get('/', async (req, res) => {
-    const { limit } = req.query;
-    const products = await productManager.getProducts(limit);
-    res.status(200).json(products);
-});
+    try {
+        const { limit } = req.query;
+        const prods = await productManager.getProducts();
+        const parsedLimit = parseInt(limit, 10);
+        const products = parsedLimit ? prods.slice(0, limit) : prods;
+        res.status(200).send(products);
+    } catch (error) {
+        console.log(`Error al obtener los productos: ${error}`);
+        res.status(500).json({error: 'Error al obtener los productos'});
+    }
+})
 
 routerProd.get('/:id', async (req, res) => {
-    const { id } = req.params;
-    const product = await productManager.getProductById(id);
-    if (product) {
-        res.status(200).send(product)
+    const { id } = req.params
+    const prod = await productManager.getProductById(id)
+
+    if (prod) {
+        res.status(200).send(prod)
     } else {
         res.status(404).send("Producto no encontrado")
     }
@@ -22,8 +30,14 @@ routerProd.get('/:id', async (req, res) => {
 
 routerProd.post('/', async (req, res) => {
     try {
-        await productManager.addProduct(req.body);
-        res.status(201).send("Producto creado");
+        const requiredFields = ['title','description','code','price','stock','category'];
+        const missingFields = requiredFields.filter(field  => !req.body[field]);
+        if(missingFields.length > 0){
+            throw new Error(`Faltan campos requeridos: ${missingFields.join(', ')}`)
+        }
+        const product = {...req.body, id: productManager.productIdCounter, status: true};
+        await productManager.addProduct(product);
+        res.status(201).json({ message: 'Producto creado', productId: product.id });
     } catch (error) {
         res.status(400).send(error.message);
     }
