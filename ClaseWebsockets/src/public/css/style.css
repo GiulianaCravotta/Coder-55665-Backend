@@ -33,7 +33,8 @@ img {
 }
 
 .product-container,
-.form-container {
+.form-container,
+#product-list {
     width: calc(50% - 20px);
     margin: 10px;
 }

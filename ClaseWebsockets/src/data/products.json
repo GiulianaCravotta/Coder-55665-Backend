@@ -23,5 +23,17 @@
             "https://www.jbl.com.ar/dw/image/v2/AAUJ_PRD/on/demandware.static/-/Sites-masterCatalog_Harman/default/dwcb5b0129/2.JBL_Tune_770NC_Product%20Image_Front_Black.png?sw=537&sfrm=png"
         ],
         "id": 2
+    },
+    {
+        "title": "JBL Wave Budsa",
+        "description": "Auriculares de boton True Wireless",
+        "code": "P003",
+        "price": "72999",
+        "stock": "4",
+        "category": "Electrónicos",
+        "thumbnails": [
+            "https://www.jbl.com.ar/dw/image/v2/AAUJ_PRD/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw497d7b9f/2.JBL_Wave_Vibe_Buds_Product%20Image_Front_Black.png?sw=537&sfrm=png"
+        ],
+        "id": 3
     }
 ]

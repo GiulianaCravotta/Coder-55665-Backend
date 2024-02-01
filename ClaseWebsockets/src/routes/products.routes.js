@@ -37,8 +37,10 @@ routerProd.post('/', async (req, res) => {
         }
         const product = {...req.body, id: productManager.productIdCounter, status: true};
         await productManager.addProduct(product);
+        console.log('Producto creado:', product.id);
         res.status(201).json({ message: 'Producto creado', productId: product.id });
     } catch (error) {
+        console.log('Error al crear el producto:', error.message);
         res.status(400).send(error.message);
     }
 });

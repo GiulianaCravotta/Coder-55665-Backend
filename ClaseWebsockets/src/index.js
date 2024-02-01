@@ -5,56 +5,51 @@ const path = require('path');
 const routerProd = require('./routes/products.routes.js');
 const routerCart = require('./routes/cart.routes.js');
 const viewsRouter = require('./routes/views.routes.js');
+const ProductManager = require('./models/ProductManager.js');
 
 const port = 8080;
 const app = express();
 
-let updatedProducts = [];
 
-//Middlewares
+// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-//Routes
+// Routes
 app.use('/api/products', routerProd);
 app.use('/api/cart', routerCart);
+app.use('/realtimeproducts', viewsRouter);
 
-
-//Handlebars
+// Handlebars
 app.engine('handlebars', handlebars.engine());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'handlebars');
 
-
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', viewsRouter);
 
-
 const httpServer = app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
-})
-//Websockets
+});
+// Websockets
 const socketServer = new Server(httpServer);
-//Websockets conecciones
+const productManager = new ProductManager('../data/products.json');
+// Websockets connections
+let updatedProducts = [];
+
 socketServer.on('connection', (socket) => {
     console.log("Usuario conectado");
-
     socket.on('createProduct', (newProduct) => {
         console.log('Nuevo producto creado:', newProduct);
-        updatedProducts.push(newProduct);
-        socketServer.emit('productoCreado', newProduct);
+        productManager.addProduct(newProduct);
+        updatedProducts = productManager.getProducts();
         socketServer.emit('updateRealTimeProductsView', updatedProducts);
     });
-    socket.on('eliminateProduct', (productId) => {
+    socket.on('deleteProduct', (productId) => {
         console.log('Producto eliminado:', productId);
-        updatedProducts = updatedProducts.filter((product) => product.id !== productId);
-        socketServer.emit('productoEliminado', productId);
-        socketServer.emit('updateRealTimeProductsView', updatedProducts);
+        productManager.deleteProduct(productId);
+        updatedProducts = productManager.getProducts();
+        socketServer.emit('updateRealTimeProductsView', updatedProducts);    
     });
-    socket.on('addToCart', ({ cartId, productId }) => {
-        console.log(`Product ${productId} added to cart ${cartId}`);
-        socketServer.emit('productoAddedToCart', { cartId, productId });
-    });
-})
-
+    
+});
