@@ -1,3 +1,4 @@
+//realTimeProducts.js
 const socket = io();
 
 socket.on('connect', () => {
@@ -5,7 +6,6 @@ socket.on('connect', () => {
 });
 
 const createProductForm = document.getElementById('createProductForm');
-
 if (createProductForm) {
   createProductForm.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -33,8 +33,28 @@ if (createProductForm) {
     });
   });
 }
-const deleteProductForm = document.getElementById('deleteProductForm');
 
+socket.on('createProduct', (newProduct) => {
+  const productContainer = document.getElementById('product-list');
+  const productCard = document.createElement('div');
+  productCard.classList.add('product-container');
+  productCard.innerHTML = `
+    <div class="product-card">
+      <img src="${newProduct.thumbnails[0]}" alt="${newProduct.title} Thumbnail">
+      <div class="product-details">
+        <h3>${newProduct.title}</h3>
+        <p>${newProduct.description}</p>
+        <p>Code: ${newProduct.code}</p>
+        <p>Price: $${newProduct.price}</p>
+        <p>Stock: ${newProduct.stock}</p>
+        <p>Category: ${newProduct.category}</p>
+      </div>
+    </div>
+  `;
+  productContainer.appendChild(productCard);
+});
+
+const deleteProductForm = document.getElementById('deleteProductForm');
 if (deleteProductForm) {
   deleteProductForm.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -43,9 +63,14 @@ if (deleteProductForm) {
     socket.emit('deleteProduct', productIdToDelete);
     console.log("producto eliminado", productIdToDelete);
   });
-
-  socket.on('updateRealTimeProductsView', (updatedProducts) => {
-    console.log('Actualizando la vista en tiempo real:', updatedProducts);
-  });
 }
 
+socket.on('deleteProduct', (deletedProductId) => {
+  const productToDelete = document.getElementById(`product-${deletedProductId}`);
+  if (productToDelete) {
+    productToDelete.remove();
+    console.log(`Producto eliminado con ID: ${deletedProductId}`);
+  } else {
+    console.log(`No se encontró el producto con ID: ${deletedProductId}`);
+  }
+});

@@ -10,7 +10,6 @@ const ProductManager = require('./models/ProductManager.js');
 const port = 8080;
 const app = express();
 
-
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -35,21 +34,16 @@ const httpServer = app.listen(port, () => {
 const socketServer = new Server(httpServer);
 const productManager = new ProductManager('../data/products.json');
 // Websockets connections
-let updatedProducts = [];
-
 socketServer.on('connection', (socket) => {
     console.log("Usuario conectado");
     socket.on('createProduct', (newProduct) => {
         console.log('Nuevo producto creado:', newProduct);
         productManager.addProduct(newProduct);
-        updatedProducts = productManager.getProducts();
-        socketServer.emit('updateRealTimeProductsView', updatedProducts);
+        socketServer.emit('createProduct', newProduct);
     });
     socket.on('deleteProduct', (productId) => {
         console.log('Producto eliminado:', productId);
         productManager.deleteProduct(productId);
-        updatedProducts = productManager.getProducts();
-        socketServer.emit('updateRealTimeProductsView', updatedProducts);    
+        socketServer.emit('deleteProduct', productId);
     });
-    
 });
