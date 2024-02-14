@@ -16,6 +16,8 @@ class CartManager {
             this.carts = carts || [];
             if (carts.length > 0) {
                 this.cartIdCounter = Math.max(...carts.map(cart => cart.id)) + 1;
+            } else {
+                this.cartIdCounter = 1;
             }
         } catch (error) {
             console.error('Error al inicializar el contador de ID del carrito:', error.message);
