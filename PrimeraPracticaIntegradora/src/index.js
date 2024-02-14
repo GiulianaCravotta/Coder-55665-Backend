@@ -1,9 +1,12 @@
+//index.js
 const express = require('express');
 const handlebars = require('express-handlebars');
 const { Server } = require('socket.io');
 const routerProd = require('./routes/products.routes.js');
 const routerCart = require('./routes/cart.routes.js');
 const messageRouter = require('./routes/message.routes.js');
+const mongoose = require('mongoose');
+const db = require('./dao/db/managers/db.js');
 
 const port = 8080;
 const app = express();
@@ -17,7 +20,7 @@ app.use('/api/products', routerProd);
 app.use('/api/cart', routerCart);
 
 //Handlebars
-app.engine('handlebars', handlebars());
+app.engine('handlebars', handlebars.engine());
 app.set('view engine', 'handlebars');
 
 app.get('/chat', (req, res) => {

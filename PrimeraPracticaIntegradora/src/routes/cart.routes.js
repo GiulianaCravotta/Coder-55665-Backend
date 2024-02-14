@@ -1,8 +1,8 @@
 const { Router } = require("express");
-const CartManager = require("../dao/models/CartManager.js");
+const CartManager = require("../dao/db/managers/cartManager");
 
 const routerCart = Router();
-const cartManager = new CartManager('../data/carrito.json');
+const cartManager = new CartManager();
 
 routerCart.post('/', async (req, res) => {
     try {
