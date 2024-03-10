@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 module.exports = {
     connect: () => {
-        return mongoose.connect("mongodb+srv://giulicravotta:EcommerceProyect@proyectobackend-cluster.tfjprb3.mongodb.net/?retryWrites=true&w=majority")
+        return mongoose.connect("mongodb+srv://giulicravotta:EcommerceProyect@proyectobackend-cluster.tfjprb3.mongodb.net/ecommerce")
             .then(() => {
                 console.log("Base de datos MongoDB conectada");
             }).catch((err) => {

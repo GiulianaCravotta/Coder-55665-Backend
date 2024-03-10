@@ -4,9 +4,9 @@ const handlebars = require('express-handlebars');
 const { Server } = require('socket.io');
 const routerProd = require('./routes/products.routes.js');
 const routerCart = require('./routes/cart.routes.js');
-const messageRouter = require('./routes/message.routes.js');
+const routerMessage = require('./routes/message.routes.js');
 const mongoose = require('mongoose');
-const db = require('./dao/db/managers/db.js');
+const dbConnect = require('./dao/db/managers/db.js');
 
 const port = 8080;
 const app = express();
@@ -18,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 //Routes
 app.use('/api/products', routerProd);
 app.use('/api/cart', routerCart);
+app.use('/api/messages', routerMessage);
 
 //Handlebars
 app.engine('handlebars', handlebars.engine());
@@ -29,9 +30,11 @@ app.get('/chat', (req, res) => {
 
 const server = app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
+    dbConnect.connect()
 });
 
 const io = new Server(server);
+
 
 io.on('connection', (socket) => {
     console.log('User connected');
@@ -42,6 +45,6 @@ io.on('connection', (socket) => {
 
     socket.on('chat message', (msg) => {
         console.log('message: ' + msg);
-        io.emit('chat message', msg);
+        io.emit('chat message', msg); 
     });
 });

@@ -1,0 +1,11 @@
+<h1>Chat</h1>
+<div id="messages">
+    {{#each messages}}
+    <div>{{this.user}}: {{this.message}}</div>
+    {{/each}}
+</div>
+<form id="messageForm">
+        <input type="text" id="userInput" placeholder="Tu nombre">
+        <input type="text" id="messageInput" placeholder="Escribe tu mensaje...">
+        <button type="submit">Enviar</button>
+</form>

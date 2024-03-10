@@ -1,4 +1,3 @@
-//
 const ProductModel = require('../models/productModel.js');
 class ProductManager {
     constructor() {
